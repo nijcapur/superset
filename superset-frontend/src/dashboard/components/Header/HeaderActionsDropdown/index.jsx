@@ -88,6 +88,7 @@ const MENU_KEYS = {
   EDIT_CSS: 'edit-css',
   DOWNLOAD_AS_IMAGE: 'download-as-image',
   TOGGLE_FULLSCREEN: 'toggle-fullscreen',
+  EXPORT_CSV: 'export-csv',
 };
 
 const DropdownButton = styled.div`
@@ -180,6 +181,21 @@ class HeaderActionsDropdown extends React.PureComponent {
           standalone: !getUrlParam(URL_PARAMS.standalone),
         });
         window.location.replace(url);
+        break;
+      }
+      case MENU_KEYS.EXPORT_CSV: {
+        const menu = document.querySelector(
+          '.ant-dropdown:not(.ant-dropdown-hidden)',
+        );
+        menu.style.visibility = 'hidden';
+        downloadAsImage(
+          SCREENSHOT_NODE_SELECTOR,
+          this.props.dashboardTitle,
+          {},
+          true,
+        )(domEvent).then(() => {
+          menu.style.visibility = 'visible';
+        });
         break;
       }
       default:
@@ -324,6 +340,14 @@ class HeaderActionsDropdown extends React.PureComponent {
             {getUrlParam(URL_PARAMS.standalone)
               ? t('Exit fullscreen')
               : t('Enter fullscreen')}
+          </Menu.Item>
+        )}
+
+        {!editMode && (
+          <Menu.Item key={MENU_KEYS.EXPORT_CSV}>
+            {getUrlParam(URL_PARAMS.standalone)
+              ? t('Export to CSV')
+              : t('Export to CSV')}
           </Menu.Item>
         )}
       </Menu>
